@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Chương III: Giai cấp, Dân tộc & Cách mạng XHCN — Game học MLN111 theo phong cách chiến đấu." />
+  <title>Chương III — Giai Cấp & Dân Tộc | MLN111</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+<!-- ═════════════════════════════════════════════════════════════
+     SCREEN 1: INTRO
+══════════════════════════════════════════════════════════════ -->
+<section id="screen-intro" class="screen" aria-label="Màn hình giới thiệu">
+  <span class="intro-badge">Chương III — MLN111</span>
+
+  <h1 class="intro-title">
+    Giai Cấp &amp; <span class="highlight">Dân Tộc</span>
+  </h1>
+
+  <p class="intro-subtitle">
+    Năm 1848 — Châu Âu rung chuyển. Người công nhân đứng trước kẻ tư bản
+    nắm tư liệu sản xuất. Mỗi câu đúng là một đòn tri thức. Mỗi câu sai — bị phản công.
+  </p>
+
+  <div class="intro-divider"></div>
+
+  <blockquote class="intro-quote">
+    "Vũ khí của sự phê phán không thể thay thế cho sự phê phán bằng vũ khí."
+    <span>— Karl Marx, 1844</span>
+  </blockquote>
+
+  <div class="intro-stats">
+    <span><strong>15</strong> câu hỏi</span>
+    <span><strong>30s</strong> / câu</span>
+    <span><strong>50</strong> câu trong pool</span>
+  </div>
+
+  <button id="btn-start-game" class="btn-start" aria-label="Bắt đầu trận chiến">
+    ⚔ Bước vào trận chiến
+  </button>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════════════════
+     SCREEN 2: BATTLE
+══════════════════════════════════════════════════════════════ -->
+<section id="screen-battle" class="screen hidden" aria-label="Màn hình trận chiến">
+
+  <!-- HUD top -->
+  <div class="battle-hud" role="status" aria-live="polite">
+    <!-- Player name -->
+    <div class="hud-combatant player-side">
+      <span class="combatant-name player">⚒ Công Nhân</span>
+      <div class="hp-bar-wrap"><div id="player-hp-bar" class="hp-bar-fill player" style="width:100%"></div></div>
+      <span class="hp-text"><span id="player-hp-val">★</span></span>
+    </div>
+
+    <!-- Center: question counter + score -->
+    <div class="hud-center">
+      <span class="question-counter" id="q-counter">1 / 15</span>
+      <div style="display:flex;align-items:baseline;gap:3px">
+        <span class="score-display" id="score-display">0</span>
+        <span class="score-max-label">/ 15 ✓</span>
+      </div>
+    </div>
+
+    <!-- Boss name -->
+    <div class="hud-combatant boss">
+      <span class="combatant-name boss-name">💼 Tư Bản ✦</span>
+      <div class="hp-bar-wrap"><div id="boss-hp-bar" class="hp-bar-fill boss-hp" style="width:100%"></div></div>
+      <span class="hp-text hp-text-boss"><span id="boss-hp-val">★</span></span>
+    </div>
+  </div>
+
+  <!-- ═══ BATTLE STAGE: Bối cảnh chiến trường + Track tiến trình ═══ -->
+  <div class="battle-stage" id="battle-stage" aria-hidden="true">
+
+    <!-- Animated clouds -->
+    <div class="stage-clouds">
+      <div class="cloud cl-1"></div>
+      <div class="cloud cl-2"></div>
+      <div class="cloud cl-3"></div>
+      <div class="cloud cl-4"></div>
+    </div>
+
+    <!-- Animated ember particles -->
+    <div class="stage-embers" id="stage-embers"></div>
+
+    <!-- Light rays from horizon -->
+    <div class="stage-rays">
+      <div class="ray ray-1"></div>
+      <div class="ray ray-2"></div>
+      <div class="ray ray-3"></div>
+      <div class="ray ray-4"></div>
+      <div class="ray ray-5"></div>
+    </div>
+
+    <!-- Scene: factory silhouette (left) with animated smoke -->
+    <div class="scene-deco scene-left">
+      <svg viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="38" width="100" height="52" fill="#2a1500"/>
+        <rect x="18" y="12" width="14" height="30" fill="#1e0e00"/>
+        <rect x="42" y="20" width="12" height="22" fill="#1e0e00"/>
+        <rect x="66" y="8"  width="16" height="34" fill="#1e0e00"/>
+        <!-- Windows glowing amber -->
+        <rect x="22" y="48" width="10" height="10" rx="1" fill="rgba(255,180,0,0.7)"/>
+        <rect x="48" y="48" width="10" height="10" rx="1" fill="rgba(255,160,0,0.6)"/>
+        <rect x="74" y="48" width="10" height="10" rx="1" fill="rgba(255,200,0,0.8)"/>
+        <rect x="90" y="48" width="10" height="10" rx="1" fill="rgba(255,140,0,0.5)"/>
+        <!-- Door -->
+        <rect x="50" y="68" width="14" height="22" rx="2" fill="#120a00"/>
+        <!-- Smoke (animated via CSS class) -->
+        <ellipse class="smoke" cx="25" cy="8"  rx="7" ry="5" fill="rgba(180,130,80,0.5)"/>
+        <ellipse class="smoke smoke-2" cx="31" cy="3"  rx="5" ry="4" fill="rgba(180,130,80,0.3)"/>
+        <ellipse class="smoke smoke-3" cx="48" cy="16" rx="6" ry="4" fill="rgba(180,130,80,0.4)"/>
+        <ellipse class="smoke" cx="74" cy="4"  rx="8" ry="5" fill="rgba(180,130,80,0.4)"/>
+        <ellipse class="smoke smoke-2" cx="80" cy="0"  rx="6" ry="4" fill="rgba(180,130,80,0.25)"/>
+      </svg>
+    </div>
+
+    <!-- Scene: castle silhouette (right) with animated flag -->
+    <div class="scene-deco scene-right">
+      <svg viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Main wall -->
+        <rect x="5"  y="40" width="110" height="50" fill="#180828"/>
+        <!-- Left tower -->
+        <rect x="5"  y="20" width="26"  height="24" fill="#180828"/>
+        <!-- Right tower -->
+        <rect x="89" y="16" width="26"  height="28" fill="#180828"/>
+        <!-- Center parapet -->
+        <rect x="44" y="26" width="32"  height="18" fill="#180828"/>
+        <!-- Battlements left tower -->
+        <rect x="5"  y="15" width="6" height="8" fill="#180828"/>
+        <rect x="14" y="15" width="6" height="8" fill="#180828"/>
+        <rect x="23" y="15" width="6" height="8" fill="#180828"/>
+        <!-- Battlements right tower -->
+        <rect x="89"  y="11" width="6" height="8" fill="#180828"/>
+        <rect x="98"  y="11" width="6" height="8" fill="#180828"/>
+        <rect x="107" y="11" width="6" height="8" fill="#180828"/>
+        <!-- Gate -->
+        <path d="M52 90 L52 63 Q60 55 68 63 L68 90Z" fill="#0a0415"/>
+        <!-- Windows glowing red -->
+        <rect x="10" y="29" width="10" height="10" rx="2" fill="rgba(255,80,40,0.75)"/>
+        <rect x="99" y="25" width="10" height="10" rx="2" fill="rgba(255,60,30,0.65)"/>
+        <rect x="50" y="31" width="8"  height="8"  rx="1" fill="rgba(255,100,40,0.6)"/>
+        <!-- Flag pole on right tower -->
+        <line x1="102" y1="11" x2="102" y2="-3" stroke="#4a1500" stroke-width="2"/>
+        <!-- Waving flag -->
+        <path class="flag-banner" d="M102 -3 L116 2 L102 7Z" fill="#dc2626"/>
+        <!-- Second flag on left tower -->
+        <line x1="18" y1="15" x2="18" y2="1" stroke="#4a1500" stroke-width="2"/>
+        <path class="flag-banner" style="animation-delay:0.4s" d="M18 1 L32 6 L18 11Z" fill="#b91c1c"/>
+      </svg>
+    </div>
+
+    <!-- Horizon glow line -->
+    <div class="stage-horizon"></div>
+
+    <!-- Ground shadow at base of stage -->
+    <div class="stage-ground"></div>
+
+    <!-- ═══ BATTLE TRACK: nhân vật đứng trên đây ═══ -->
+    <div class="battle-track-wrapper">
+
+      <!-- Player character (Công nhân) — đứng trên track -->
+      <div class="track-character player-char" id="sprite-player" style="left:7.3%">
+        <div class="char-label player-label">⚒ Công Nhân</div>
+        <svg viewBox="0 0 120 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="35" y="80" width="50" height="60" rx="6" fill="#374151"/>
+          <rect x="45" y="88" width="30" height="20" rx="3" fill="#1f2937"/>
+          <circle cx="60" cy="98" r="8" fill="#dc2626"/>
+          <text x="60" y="102" text-anchor="middle" font-size="10" fill="white">★</text>
+          <circle cx="60" cy="60" r="22" fill="#fbbf24"/>
+          <rect x="38" y="38" width="44" height="12" rx="4" fill="#1e3a5f"/>
+          <rect x="32" y="44" width="56" height="6" rx="3" fill="#1e3a5f"/>
+          <circle cx="52" cy="62" r="3.5" fill="#1f2937"/>
+          <circle cx="68" cy="62" r="3.5" fill="#1f2937"/>
+          <circle cx="53" cy="61" r="1.2" fill="white"/>
+          <circle cx="69" cy="61" r="1.2" fill="white"/>
+          <path d="M52 72 Q60 76 68 72" stroke="#92400e" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <rect x="10" y="82" width="24" height="14" rx="7" fill="#374151" transform="rotate(-20 22 89)"/>
+          <rect x="86" y="74" width="14" height="30" rx="7" fill="#374151" transform="rotate(15 93 89)"/>
+          <rect x="94" y="50" width="10" height="26" rx="3" fill="#6b7280"/>
+          <rect x="86" y="44" width="26" height="14" rx="4" fill="#374151"/>
+          <rect x="38" y="136" width="18" height="36" rx="6" fill="#1f2937"/>
+          <rect x="64" y="136" width="18" height="36" rx="6" fill="#1f2937"/>
+          <rect x="34" y="162" width="24" height="12" rx="4" fill="#111827"/>
+          <rect x="60" y="162" width="24" height="12" rx="4" fill="#111827"/>
+          <ellipse cx="60" cy="174" rx="28" ry="5" fill="rgba(34,197,94,0.25)"/>
+        </svg>
+        <div class="char-shadow player-shadow"></div>
+      </div>
+
+      <!-- Boss character (Tư bản) — đứng trên track (mirrored, nhìn trái) -->
+      <div class="track-character boss-char" id="sprite-boss" style="left:12.7%">
+        <div class="char-label boss-label">💼 Tư Bản</div>
+        <svg viewBox="0 0 120 180" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform:scaleX(-1)">
+          <rect x="30" y="78" width="60" height="68" rx="6" fill="#1a1a2e"/>
+          <path d="M60 82 L44 115 L60 108 L76 115 L60 82Z" fill="#16213e"/>
+          <path d="M60 88 L56 120 L60 118 L64 120 L60 88Z" fill="#eab308"/>
+          <circle cx="60" cy="54" r="24" fill="#d97706"/>
+          <rect x="36" y="20" width="48" height="22" rx="4" fill="#0f0f0f"/>
+          <rect x="28" y="40" width="64" height="8" rx="4" fill="#0f0f0f"/>
+          <rect x="44" y="16" width="32" height="6" rx="3" fill="#eab308"/>
+          <circle cx="51" cy="56" r="5" fill="#7f1d1d"/>
+          <circle cx="69" cy="56" r="5" fill="#7f1d1d"/>
+          <circle cx="52" cy="55" r="1.8" fill="#fca5a5"/>
+          <circle cx="70" cy="55" r="1.8" fill="#fca5a5"/>
+          <circle cx="69" cy="56" r="7.5" stroke="#eab308" stroke-width="1.5" fill="none"/>
+          <line x1="74" y1="60" x2="79" y2="66" stroke="#eab308" stroke-width="1.5"/>
+          <path d="M48 68 Q60 78 72 68" stroke="#7f1d1d" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M50 64 Q55 60 60 64 Q65 60 70 64" stroke="#1a1a1a" stroke-width="2.5" fill="none"/>
+          <rect x="88" y="80" width="14" height="34" rx="7" fill="#1a1a2e" transform="rotate(-15 95 97)"/>
+          <rect x="100" y="70" width="6" height="60" rx="3" fill="#ca8a04"/>
+          <ellipse cx="103" cy="68" rx="10" ry="6" fill="#eab308"/>
+          <rect x="36" y="140" width="18" height="34" rx="6" fill="#0f0f23"/>
+          <rect x="66" y="140" width="18" height="34" rx="6" fill="#0f0f23"/>
+          <rect x="30" y="164" width="26" height="12" rx="4" fill="#1a1a1a"/>
+          <rect x="62" y="164" width="26" height="12" rx="4" fill="#1a1a1a"/>
+          <ellipse cx="60" cy="174" rx="28" ry="5" fill="rgba(239,68,68,0.25)"/>
+        </svg>
+        <div class="char-shadow boss-shadow"></div>
+      </div>
+
+      <!-- The road / path tiles (injected by JS) -->
+      <div class="battle-track" id="battle-track" role="progressbar" aria-label="Tiến trình trận chiến"></div>
+
+    </div><!-- /battle-track-wrapper -->
+  </div><!-- /battle-stage -->
+
+  <!-- Question zone (wrapper needed for flex layout) -->
+  <div class="battle-question-zone">
+
+    <!-- Timer -->
+    <div class="timer-wrap">
+      <div class="timer-bar-bg">
+        <div id="timer-bar" class="timer-bar-fill" style="width:100%"></div>
+      </div>
+      <span id="timer-number" class="timer-number">30</span>
+    </div>
+
+    <!-- Question card -->
+    <div class="question-card" id="question-card">
+      <div class="question-type-badge" id="q-type-badge">định nghĩa</div>
+      <p class="question-text" id="question-text">Đang tải câu hỏi...</p>
+    </div>
+
+    <!-- Options -->
+    <div class="options-grid" id="options-grid" role="group" aria-label="Lựa chọn trả lời">
+      <!-- Dynamically rendered -->
+    </div>
+
+    <!-- Explanation feedback -->
+    <div class="explanation-bar" id="explanation-bar" role="alert"></div>
+
+  </div><!-- /question-zone -->
+
+</section><!-- /battle -->
+
+
+<!-- ═════════════════════════════════════════════════════════════
+     SCREEN 3: WIN
+══════════════════════════════════════════════════════════════ -->
+<section id="screen-win" class="screen hidden" aria-label="Màn hình chiến thắng">
+  <div class="result-icon">🏆</div>
+  <h2 class="result-title win">Tri Thức Chiến Thắng!</h2>
+  <p class="result-score">Điểm số: <span id="win-score">0</span></p>
+
+  <div class="result-stats" id="win-stats">
+    <!-- injected by JS -->
+  </div>
+
+  <blockquote class="result-quote" id="win-quote">
+    "Giai cấp vô sản, cánh tay của mình chỉ là xiềng xích. Họ có một thế giới để chinh phục."
+    <span>— Karl Marx &amp; Friedrich Engels, Tuyên ngôn 1848</span>
+  </blockquote>
+
+  <div class="result-actions">
+    <button id="btn-replay-win" class="btn-action primary">⚔ Chơi lại</button>
+    <button id="btn-menu-win" class="btn-action secondary">↩ Trang chủ</button>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════════════════
+     SCREEN 4: GAME OVER
+══════════════════════════════════════════════════════════════ -->
+<section id="screen-gameover" class="screen hidden" aria-label="Màn hình thua">
+  <div class="result-icon">💀</div>
+  <h2 class="result-title lose">Bị Phản Công!</h2>
+  <p style="color:var(--gray-400); font-size:0.9rem;">Tri thức chưa đủ vững — hãy học lại và chiến đấu tiếp.</p>
+  <p class="result-score">Điểm số: <span id="lose-score">0</span></p>
+
+  <div class="result-stats" id="lose-stats">
+    <!-- injected by JS -->
+  </div>
+
+  <blockquote class="result-quote">
+    "Không có lý luận cách mạng thì không có phong trào cách mạng."
+    <span>— V.I. Lênin</span>
+  </blockquote>
+
+  <div class="result-actions">
+    <button id="btn-replay-lose" class="btn-action primary">⚔ Thử lại</button>
+    <button id="btn-menu-lose" class="btn-action secondary">↩ Trang chủ</button>
+  </div>
+</section>
+
+
+<!-- Flash overlay (screen flash effect) -->
+<div class="flash-overlay" id="flash-overlay" aria-hidden="true"></div>
+
+
+<!-- ═════════════════════════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════════════════════════ -->
+<script src="parser.js"></script>
+<script src="engine.js"></script>
+<script>
+/* ─────────────────────────────────────────────────────────────
+   main.js (inlined) — Battle track + combat system
+   ───────────────────────────────────────────────────────────── */
+
+// ── Refs ──────────────────────────────────────────────────────
+const screens = {
+  intro:    document.getElementById('screen-intro'),
+  battle:   document.getElementById('screen-battle'),
+  win:      document.getElementById('screen-win'),
+  gameover: document.getElementById('screen-gameover'),
+};
+const $ = id => document.getElementById(id);
+
+// ── Screen navigation ─────────────────────────────────────────
+function showScreen(name) {
+  Object.entries(screens).forEach(([k, el]) =>
+    el.classList.toggle('hidden', k !== name)
+  );
+}
+
+// ── Flash screen ─────────────────────────────────────────────
+function flashScreen(color) {
+  const el = $('flash-overlay');
+  el.className = `flash-overlay ${color}`;
+  setTimeout(() => el.className = 'flash-overlay', 500);
+}
+
+// ── Damage floats ─────────────────────────────────────────────
+function showDamageFloat(type, label) {
+  const stage = document.querySelector('.battle-stage') || document.body;
+  const el = document.createElement('div');
+  el.className = `damage-float ${type}`;
+  el.textContent = label;
+  stage.appendChild(el);
+  el.addEventListener('animationend', () => el.remove());
+}
+
+// ── Impact burst ─────────────────────────────────────────────
+function spawnImpact() {
+  const wrapper = document.querySelector('.battle-track-wrapper');
+  if (!wrapper) return;
+  const el = document.createElement('div');
+  el.className = 'impact-burst';
+  const player = $('sprite-player');
+  const boss   = $('sprite-boss');
+  if (!player || !boss) return;
+  const pLeft = parseFloat(player.style.left) || 0;
+  const bLeft = parseFloat(boss.style.left) || 0;
+  el.style.left = `${(pLeft + bLeft) / 2}%`;
+  wrapper.appendChild(el);
+  el.addEventListener('animationend', () => el.remove());
+}
+
+// ══ TRACK SYSTEM ══════════════════════════════════════════════
+let correctCount = 0;
+let trackTotal = 15;
+
+function initBattleTrack(total) {
+  correctCount = 0;
+  trackTotal = total;
+
+  const track = $('battle-track');
+  track.innerHTML = '';
+  for (let i = 0; i < total; i++) {
+    const tile = document.createElement('div');
+    tile.className = 'track-tile';
+    tile.id = `ttile-${i}`;
+    tile.setAttribute('data-num', i + 1);
+    tile.setAttribute('title', `Điểm ${i + 1}`);
+    track.appendChild(tile);
+  }
+
+  positionCharsOnTrack(false);
+  updateTileHighlights();
+  spawnEmbers();
+}
+
+function tileCenterPct(i) {
+  const PAD = 2.5; 
+  const usable = 100 - PAD * 2;
+  const w = usable / trackTotal;
+  return PAD + i * w + w / 2;
+}
+
+function playerLeftPct() { return tileCenterPct(Math.min(correctCount, trackTotal - 1)) - 2.8; }
+function bossLeftPct()   { return tileCenterPct(Math.min(correctCount, trackTotal - 1)) + 2.8; }
+
+function positionCharsOnTrack(animate = true) {
+  const player = $('sprite-player');
+  const boss   = $('sprite-boss');
+  if (!player || !boss) return;
+
+  if (!animate) {
+    player.style.transition = 'none';
+    boss.style.transition   = 'none';
+  }
+
+  player.style.left = `${playerLeftPct()}%`;
+  boss.style.left   = `${bossLeftPct()}%`;
+
+  if (!animate) {
+    void player.offsetWidth;
+    player.style.transition = '';
+    boss.style.transition   = '';
+  }
+}
+
+function updateTileHighlights() {
+  for (let i = 0; i < trackTotal; i++) {
+    const tile = $(`ttile-${i}`);
+    if (!tile) continue;
+    tile.classList.remove('tile-player', 'tile-done', 'tile-wrong', 'tile-timeout');
+    if (i < correctCount) tile.classList.add('tile-done');
+    else if (i === Math.min(correctCount, trackTotal - 1)) tile.classList.add('tile-player');
+  }
+}
+
+function markTile(tileIdx, result) {
+  const tile = $(`ttile-${tileIdx}`);
+  if (!tile) return;
+  tile.classList.add(`tile-${result}`);
+}
+
+// ── Animate class helper ─────────────────────────────────────
+function triggerAnim(el, cls) {
+  el.classList.remove(cls);
+  void el.offsetWidth;
+  el.classList.add(cls);
+  el.addEventListener('animationend', () => el.classList.remove(cls), { once: true });
+}
+
+// ══ COMBAT ANIMATIONS ═════════════════════════════════════════
+function doCorrectAnimation() {
+  const player = $('sprite-player');
+  const boss   = $('sprite-boss');
+  const currentTileIdx = Math.min(correctCount, trackTotal - 1);
+
+  markTile(currentTileIdx, 'done');
+
+  triggerAnim(player, 'char-attack');
+  setTimeout(() => {
+    spawnImpact();
+    triggerAnim(boss, 'char-take-hit');
+  }, 220);
+
+  setTimeout(() => {
+    if (correctCount < trackTotal) correctCount++;
+    positionCharsOnTrack(true);
+    updateTileHighlights();
+    $('score-display').textContent = correctCount;
+  }, 450);
+
+  showDamageFloat('correct', '⚔ +1 Đúng!');
+}
+
+function doWrongAnimation(resultType) {
+  const player = $('sprite-player');
+  const boss   = $('sprite-boss');
+  const currentTileIdx = Math.min(correctCount, trackTotal - 1);
+
+  markTile(currentTileIdx, 'tile-wrong-flash');
+
+  triggerAnim(boss, 'char-attack-boss');
+  setTimeout(() => {
+    spawnImpact();
+    triggerAnim(player, 'char-take-hit');
+  }, 220);
+
+  showDamageFloat('wrong', resultType === 'timeout' ? '⏰ Hết giờ!' : '🛡 Sai!');
+}
+
+// ── Render question ───────────────────────────────────────────
+function renderQuestion(q, index, total) {
+  if (!q) return;
+  $('q-counter').textContent = `${index} / ${total}`;
+  $('q-type-badge').textContent = translateType(q.type);
+  $('question-text').textContent = q.question;
+
+  updateTileHighlights();
+
+  const expBar = $('explanation-bar');
+  expBar.className = 'explanation-bar';
+  expBar.innerHTML = '';
+
+  const grid = $('options-grid');
+  grid.innerHTML = '';
+  q.options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.id = `opt-${opt.key}`;
+    btn.className = 'option-btn';
+    btn.setAttribute('aria-label', `Lựa chọn ${opt.key}: ${opt.text}`);
+    btn.innerHTML = `<span class="option-key">${opt.key}</span><span class="option-text">${opt.text}</span>`;
+    btn.addEventListener('click', () => GameEngine.submitAnswer(opt.key));
+    grid.appendChild(btn);
+  });
+
+  const card = $('question-card');
+  card.style.animation = 'none';
+  requestAnimationFrame(() => { card.style.animation = ''; });
+}
+
+function translateType(type) {
+  const map = {
+    definition: 'Định nghĩa', analysis: 'Phân tích',
+    comparison: 'So sánh',    synthesis: 'Tổng hợp',
+    application:'Liên hệ thực tiễn', quote: 'Giải thích trích dẫn',
+  };
+  return map[type] || type;
+}
+
+// ── Timer UI ──────────────────────────────────────────────────
+function updateTimerUI(remaining, total) {
+  const pct = (remaining / total) * 100;
+  const bar = $('timer-bar');
+  const num = $('timer-number');
+  if (bar) bar.style.width = `${pct}%`;
+  const urgent = remaining <= 8;
+  if (bar) bar.classList.toggle('urgent', urgent);
+  if (num) {
+    num.classList.toggle('urgent', urgent);
+    num.textContent = remaining;
+  }
+}
+
+// ── HP UI ──────────────────────────────────────────────────────
+function updatePlayerHP(current, max) {
+  const pct = Math.max(0, (current / max) * 100);
+  const bar = $('player-hp-bar');
+  if (bar) { bar.style.width = `${pct}%`; bar.classList.toggle('low', pct < 30); }
+  const val = $('player-hp-val');
+  if (val) val.textContent = current;
+}
+function updateBossHP(current, max) {
+  const pct = Math.max(0, (current / max) * 100);
+  const bar = $('boss-hp-bar');
+  if (bar) bar.style.width = `${pct}%`;
+  const val = $('boss-hp-val');
+  if (val) val.textContent = current;
+}
+
+// ── Answer result ─────────────────────────────────────────────
+function showAnswerResult(isCorrect, correctKey, selectedKey, explanation, points) {
+  document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    const key = btn.id.replace('opt-', '');
+    if (key === correctKey) btn.classList.add('correct');
+    else if (selectedKey && key === selectedKey && !isCorrect) btn.classList.add('wrong');
+  });
+
+  if (isCorrect) {
+    flashScreen('gold');
+    doCorrectAnimation();
+  } else {
+    flashScreen('red');
+    doWrongAnimation(selectedKey ? 'wrong' : 'timeout');
+  }
+
+  const expBar = $('explanation-bar');
+  expBar.className = `explanation-bar ${isCorrect ? 'correct-exp' : 'wrong-exp'} visible`;
+  const label = isCorrect
+    ? `<strong>✓ Chính xác!</strong> `
+    : (selectedKey ? '<strong>✗ Chưa đúng.</strong> ' : '<strong>⏰ Hết giờ!</strong> ');
+  expBar.innerHTML = label + (explanation || '');
+}
+
+// ── Result screens ────────────────────────────────────────────
+function buildStatsHTML(stats) {
+  return `
+    <div class="stat-pill"><strong>${stats.correct}</strong>Đúng</div>
+    <div class="stat-pill"><strong>${stats.wrong}</strong>Sai</div>
+    <div class="stat-pill"><strong>${stats.timeout}</strong>Hết giờ</div>
+    <div class="stat-pill"><strong>${stats.accuracy}%</strong>Chính xác</div>
+  `;
+}
+function onGameWin(score, stats) {
+  $('win-score').textContent = correctCount;
+  $('win-stats').innerHTML = buildStatsHTML(stats);
+  setTimeout(() => showScreen('win'), 1200);
+}
+function onGameOver(score, stats) {
+  $('lose-score').textContent = correctCount;
+  $('lose-stats').innerHTML = buildStatsHTML(stats);
+  setTimeout(() => showScreen('gameover'), 1200);
+}
+
+// ── Engine init ──────────────────────────────────────────────
+function initEngine() {
+  GameEngine.init(
+    {
+      totalQuestions:  15,
+      timerSeconds:    30,
+      playerMaxHP:     100,
+      bossMaxHP:       100,
+      damageCorrect:   10, 
+      damageWrong:     15,
+      damageTimeout:   20,
+      baseScoreRight:  100,
+      bonusTimerFactor:0.5,
+    },
+    {
+      onQuestionShow:   renderQuestion,
+      onTimerTick:      updateTimerUI,
+      onPlayerHPChange: updatePlayerHP,
+      onBossHPChange:   updateBossHP,
+      onAnswerResult:   showAnswerResult,
+      onScoreChange:    () => {}, 
+      onGameWin:        onGameWin,
+      onGameOver:       onGameOver,
+    }
+  );
+}
+
+// ── Reset HUD ─────────────────────────────────────────────────
+function resetHUD() {
+  updatePlayerHP(100, 100);
+  updateBossHP(100, 100);
+  $('score-display').textContent = '0';
+}
+
+// ── Ember particle spawner ────────────────────────────────────
+function spawnEmbers() {
+  const container = $('stage-embers');
+  if (!container) return;
+  container.innerHTML = '';
+  const COLORS = ['rgba(255,200,60,0.9)', 'rgba(255,140,30,0.85)', 'rgba(234,179,8,0.7)'];
+  for (let i = 0; i < 30; i++) {
+    const el = document.createElement('div');
+    el.className = 'ember';
+    const size = 2 + Math.random() * 4;
+    const left = 2 + Math.random() * 96;
+    const dur = 3 + Math.random() * 4;
+    const delay = -Math.random() * 5;
+    el.style.cssText = `width:${size}px; height:${size}px; left:${left}%; bottom:${8 + Math.random() * 40}%; background:${COLORS[i % 3]}; animation-duration:${dur}s; animation-delay:${delay}s;`;
+    container.appendChild(el);
+  }
+}
+
+// ── Start game ────────────────────────────────────────────────
+async function startGame() {
+  showScreen('battle');
+  resetHUD();
+  initEngine();
+  correctCount = 0;
+
+  const questions = await QuestionParser.loadFromFile('questions_ch3.txt');
+  if (!questions.length) {
+    alert('Không tải được câu hỏi. Hãy chạy qua Live Server hoặc localhost.');
+    showScreen('intro');
+    return;
+  }
+
+  const battleQueue = QuestionParser.buildBattleQueue(questions, 15);
+  initBattleTrack(battleQueue.length);
+  GameEngine.setQuestions(battleQueue);
+  GameEngine.start();
+}
+
+// ── Events ────────────────────────────────────────────────────
+$('btn-start-game').addEventListener('click', startGame);
+$('btn-replay-win').addEventListener('click', startGame);
+$('btn-replay-lose').addEventListener('click', startGame);
+$('btn-menu-win').addEventListener('click', () => showScreen('intro'));
+$('btn-menu-lose').addEventListener('click', () => showScreen('intro'));
+
+// Keyboard A/B/C/D
+document.addEventListener('keydown', e => {
+  const key = e.key.toUpperCase();
+  if (['A','B','C','D'].includes(key)) {
+    const btn = $(`opt-${key}`);
+    if (btn && !btn.disabled) btn.click();
+  }
+});
+
+showScreen('intro');
+</script>
+
+</body>
+</html>
