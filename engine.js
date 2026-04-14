@@ -146,20 +146,8 @@ const GameEngine = (() => {
     callbacks.onScoreChange(state.score);
     callbacks.onAnswerResult(isCorrect, q.answer, selectedKey, q.explanation, pointsGained);
 
-    // Check win/lose after damage
-    setTimeout(() => {
-      if (state.bossHP <= 0) {
-        endGame('win');
-        return;
-      }
-      if (state.playerHP <= 0) {
-        endGame('lose');
-        return;
-      }
-      // Next question
-      state.currentIdx++;
-      showQuestion();
-    }, 2800); // Pause để xem kết quả
+    // Loại bỏ setTimeout tự động chuyển câu hỏi
+    // Sẽ đợi UI gọi GameEngine.next() để tiếp tục, cho phép người dùng đọc giải thích
   }
 
   // ─── TIMEOUT ────────────────────────────────────────────────────────────────
@@ -174,14 +162,29 @@ const GameEngine = (() => {
     callbacks.onAnswerResult(false, q.answer, null, q.explanation, 0);
     callbacks.onScoreChange(state.score);
 
-    setTimeout(() => {
-      if (state.playerHP <= 0) {
-        endGame('lose');
-        return;
-      }
-      state.currentIdx++;
+    // Loại bỏ setTimeout tự động chuyển câu hỏi
+    // Sẽ đợi UI gọi GameEngine.next()
+  }
+
+  // ─── NAVIGATION ─────────────────────────────────────────────────────────────
+  function next() {
+    if (!state.answered || state.gameOver) return;
+
+    state.currentIdx++;
+    showQuestion();
+  }
+
+  function prev() {
+    if (state.currentIdx > 0) {
+      state.currentIdx--;
+      state.gameOver = false;
       showQuestion();
-    }, 2800);
+    }
+  }
+
+  function forceEnd() {
+    state.bossHP = 0;
+    endGame('win');
   }
 
   // ─── END GAME ───────────────────────────────────────────────────────────────
@@ -192,7 +195,8 @@ const GameEngine = (() => {
     // Determine result if not already forced
     let result = reason;
     if (!result) {
-      result = state.bossHP <= 0 ? 'win' : (state.playerHP <= 0 ? 'lose' : 'win');
+      const threshold = Math.ceil(state.questions.length / 2);
+      result = state.stats.correct >= threshold ? 'win' : 'lose';
     }
 
     const finalStats = {
@@ -216,7 +220,7 @@ const GameEngine = (() => {
   function getConfig() { return { ...cfg }; }
 
   // Public API
-  return { init, setQuestions, start, submitAnswer, getState, getConfig };
+  return { init, setQuestions, start, submitAnswer, getState, getConfig, next, prev, forceEnd };
 })();
 
 // Export cho module environment

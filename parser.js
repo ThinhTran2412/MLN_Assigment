@@ -112,24 +112,58 @@ const QuestionParser = (() => {
   }
 
   /**
-   * Lấy câu hỏi theo cấu trúc (dễ → trung → khó) cho 1 trận đấu
+   * Lấy câu hỏi theo cấu trúc chặng (Stages)
    * @param {Array} questions - Tất cả câu hỏi đã parse
-   * @param {number} total - Tổng số câu muốn chơi
+   * @param {string} mode - 'learn' (50 câu) hoặc 'test' (15 câu)
    */
-  function buildBattleQueue(questions, total = 15) {
-    const easy   = shuffle(filterByDifficulty(questions, 1));
-    const medium = shuffle(filterByDifficulty(questions, 2));
-    const hard   = shuffle(filterByDifficulty(questions, 3));
-
-    const easyCount   = Math.ceil(total * 0.35);
-    const mediumCount = Math.ceil(total * 0.40);
-    const hardCount   = total - easyCount - mediumCount;
-
-    return [
-      ...easy.slice(0, easyCount),
-      ...medium.slice(0, mediumCount),
-      ...hard.slice(0, hardCount),
+  function buildBattleQueue(questions, mode = 'learn') {
+    const pools = [
+      {
+        name: "Chặng 1: Nguồn gốc",
+        ids: ["001", "002", "003", "006", "021", "043"],
+        testCount: 3
+      },
+      {
+        name: "Chặng 2: Mâu thuẫn",
+        ids: ["004", "010", "013", "014", "015", "016", "030", "041", "042", "048", "049"],
+        testCount: 4
+      },
+      {
+        name: "Chặng 3: Cách mạng",
+        ids: ["005", "008", "009", "011", "012", "022", "023", "024", "026", "027", "031", "033", "034", "037", "040", "044", "047"],
+        testCount: 4
+      },
+      {
+        name: "Chặng 4: Thời đại",
+        ids: ["007", "017", "018", "019", "020", "025", "028", "029", "032", "035", "036", "038", "039", "045", "046", "050"],
+        testCount: 4
+      }
     ];
+
+    let queue = [];
+    
+    for (const pool of pools) {
+      // Find all questions in this pool
+      const poolQs = questions.filter(q => pool.ids.includes(q.id));
+      let selected = [];
+
+      if (mode === 'test') {
+        // Shuffle and pick specific count
+        const shuffled = shuffle(poolQs);
+        selected = shuffled.slice(0, pool.testCount);
+      } else {
+        // Learn mode: use all questions in the pool sequentially
+        selected = poolQs;
+      }
+
+      // Assign stage name
+      selected.forEach(q => {
+        q.stageName = pool.name;
+      });
+      queue = queue.concat(selected);
+    }
+    
+    return queue;
   }
 
   // Public API
