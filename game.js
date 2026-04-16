@@ -31,6 +31,7 @@ const CONFIG = {
     tu_huu: 'assets/tu_huu.png',
     tu_huu_phase2: 'assets/tu_huu_phase2.png',
     happy: 'assets/happy.png',
+    done: 'assets/done.png',
     apple_tree: 'assets/apple_tree.png',
     farming: 'assets/farming.png',
     guard: 'assets/guard.png',
@@ -376,7 +377,7 @@ function loadAssets(callback) {
   let loaded = 0;
   const keys = Object.keys(CONFIG.ASSETS);
   const toLoad = keys.length;
-  const noChromaKeys = new Set(['poor_single', 'rich_single', 'guard', 'rebel', 'nole', 'farming', 'tu_huu', 'tu_huu_phase2', 'happy']);
+  const noChromaKeys = new Set(['poor_single', 'rich_single', 'guard', 'rebel', 'nole', 'farming', 'tu_huu', 'tu_huu_phase2', 'happy', 'done']);
   
   keys.forEach(key => {
     const img = new Image();
@@ -595,6 +596,16 @@ const AUDIO = {
         console.warn("Browser requires user interaction to play music first.");
       });
     }
+  },
+  playEndingCue(kind) {
+    const src = kind === 'done'
+      ? 'assets/music/done_sound.mp3'
+      : 'assets/music/fail_sound.mp3';
+    const cue = new Audio(src);
+    cue.volume = this.musicVolume;
+    cue.play().catch(() => {
+      console.warn(`Unable to play ending cue: ${src}`);
+    });
   }
 };
 
@@ -1040,8 +1051,8 @@ class GameWorld {
     }
 
     if (IS_TU_HUU_PAGE) {
-      const tuHuuImg = (STATE.tuHuuPhase2Unlocked && STATE.stability >= 70)
-        ? IMAGES['happy']
+      const tuHuuImg = (STATE.tuHuuPhase2Unlocked && STATE.stability >= 80)
+        ? IMAGES['done']
         : (STATE.tuHuuPhase2Unlocked ? IMAGES['tu_huu_phase2'] : IMAGES['tu_huu']);
       if (tuHuuImg) {
         const iw = tuHuuImg.width || tuHuuImg.naturalWidth || W;
@@ -1444,7 +1455,7 @@ function performAction(act) {
     return;
   }
 
-  if (IS_TU_HUU_PAGE && STATE.tuHuuPhase2Unlocked && STATE.stability >= 95) {
+  if (IS_TU_HUU_PAGE && STATE.tuHuuPhase2Unlocked && STATE.stability >= 80) {
     endChapter2Good();
     return;
   }
@@ -1529,6 +1540,7 @@ function endChapter2Bad() {
   STATE.gameOver = true;
   const music = document.getElementById('bg-music');
   if (music) music.pause();
+  AUDIO.playEndingCue('fail');
   document.getElementById('screen-ending').classList.remove('hidden');
   document.getElementById('ending-icon').textContent = '⛓️';
   document.getElementById('ending-title').textContent = 'Chương 2: Sụp đổ';
@@ -1545,6 +1557,7 @@ function endChapter2TaxBad() {
   STATE.gameOver = true;
   const music = document.getElementById('bg-music');
   if (music) music.pause();
+  AUDIO.playEndingCue('fail');
   document.getElementById('screen-ending').classList.remove('hidden');
   document.getElementById('ending-icon').textContent = '🔥';
   document.getElementById('ending-title').textContent = 'Chương 2: Thuế quan phản tác dụng';
@@ -1561,6 +1574,7 @@ function endChapter2Good() {
   STATE.gameOver = true;
   const music = document.getElementById('bg-music');
   if (music) music.pause();
+  AUDIO.playEndingCue('done');
   document.getElementById('screen-ending').classList.remove('hidden');
   document.getElementById('ending-icon').textContent = '🎉';
   document.getElementById('ending-title').textContent = 'Chương 2: Nhà nước ra đời';
@@ -1668,8 +1682,8 @@ function updateObjective() {
     if (!objTextEl || !objProgEl) return;
 
     if (STATE.tuHuuPhase2Unlocked) {
-      objTextEl.textContent = 'Giai đoạn 2: Ổn định từ 70% sẽ mở nền happy.png, đạt 95% để Nhà nước mới ra đời. Cảnh báo: lạm dụng Thuế quan sẽ làm Mâu thuẫn tăng trở lại.';
-      const prog = Math.min(100, (STATE.stability / 95) * 100);
+      objTextEl.textContent = 'Giai đoạn 2: Giữ bối cảnh hiện tại đến khi Ổn định đạt 80% để chuyển sang done (Nhà nước mới ra đời).';
+      const prog = Math.min(100, (STATE.stability / 80) * 100);
       objProgEl.style.width = `${prog}%`;
       return;
     }
@@ -1842,6 +1856,7 @@ function endGame(type) {
   STATE.gameOver = true;
   document.getElementById('screen-ending').classList.remove('hidden');
   setEndingArt(null);
+  AUDIO.playEndingCue(type === 'good' ? 'done' : 'fail');
   
   const iconEl = document.getElementById('ending-icon');
   const titleEl = document.getElementById('ending-title');
