@@ -1,0 +1,18 @@
+[INDEX_HINT]
+Bạn đang ở Kỷ 1 (Nguyên thủy). Hãy lượm nhặt đủ 5 lần để mở ra bước ngoặt lịch sử: tư hữu xuất hiện.
+
+Gợi ý nhanh:
+- “Lượm nhặt” sẽ dẫn tới chuyển map sang giai đoạn mới.
+
+[TU_HUU_ENTER]
+Tư hữu đã xuất hiện. Khi của cải tích lũy, xã hội bắt đầu phân hóa: người nghèo và người giàu hình thành.
+mục tiêu của bạn là hướng đến đấu tranh giai cấp để mở ra 1 thời đại mới
+
+Gợi ý nhanh:
+- “Canh tác” sẽ tạo thêm một ruộng (farm) mới
+- Muốn có đấu tranh giai cấp thì phải có sự phân biệt giai cấp
+- từ nỗi dậy sẽ tiến đến đấu tranh giai cấp mãnh liệt
+
+[HINT_BUTTON]
+Nhấn nút “?” để xem hint theo từng giai đoạn. Bạn có thể quay lại xem bất cứ lúc nào.
+
