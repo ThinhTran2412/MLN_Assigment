@@ -47,6 +47,10 @@ body {
     radial-gradient(circle at 85% 20%, rgba(108, 99, 255, 0.2), transparent 38%),
     radial-gradient(circle at center, #1a1b3a 0%, #05070a 100%);
   text-align: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1.2rem 0.9rem;
+  -webkit-overflow-scrolling: touch;
 }
 .intro-content {
   width: min(1040px, 94vw);
@@ -56,6 +60,7 @@ body {
   background: rgba(8, 10, 18, 0.72);
   backdrop-filter: blur(10px);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 40px rgba(108, 99, 255, 0.18);
+  margin: auto 0;
 }
 .intro-badge {
   display: inline-block;
@@ -550,6 +555,139 @@ body {
 }
 .theory-item p strong {
   color: var(--gold);
+}
+
+/* ============================================================
+   RESPONSIVE BREAKPOINTS
+   Phone / Tablet / iPad / MacBook / Desktop
+   ============================================================ */
+@media (max-width: 1366px) {
+  .sidebar { width: 220px; padding: 0.7rem; }
+  .phase-name { font-size: 0.82rem; }
+  .obj-text { font-size: 0.74rem; }
+  .stat-box .value { font-size: 0.82rem; }
+  .intro-content { width: min(980px, 95vw); }
+}
+
+@media (max-width: 1180px) {
+  .hud { height: auto; min-height: 64px; padding: 0.5rem 0.75rem; gap: 0.5rem; flex-wrap: wrap; }
+  .hud-left, .hud-center, .hud-right { width: 100%; }
+  .hud-left { display: flex; justify-content: center; }
+  .hud-center { order: 3; }
+  .hud-right { justify-content: center; }
+  .dash-center { gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .game-layout { margin-top: 104px; height: calc(100vh - 104px); }
+  .sidebar { width: 200px; }
+  .advisor-box { width: 250px; right: 1rem; top: 6.6rem; }
+  .intro-cards { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 1024px) {
+  body { overflow: hidden; }
+  .game-layout {
+    height: calc(100vh - 104px);
+    margin-top: 104px;
+    flex-direction: row;
+    overflow: hidden;
+  }
+  .sidebar {
+    width: 170px;
+    border-top: none;
+    border-bottom: none;
+  }
+  .sidebar-right { border-left: 1px solid var(--border); }
+  .world-container {
+    min-height: 0;
+    height: auto;
+  }
+  .actions-grid { grid-template-columns: 1fr; gap: 0.35rem; }
+  .action-card { min-height: 56px; padding: 0.25rem 0.4rem; }
+  .ac-icon { font-size: 1rem; min-width: 1.2rem; }
+  .ac-name { font-size: 0.76rem; }
+  .ac-cost { font-size: 0.68rem; }
+  .panel-header { margin-bottom: 0.8rem; }
+  .class-distribution { margin-bottom: 0.65rem; gap: 0.5rem; }
+  .class-item { padding: 0.35rem 0.45rem; }
+  .c-icon { font-size: 1rem; }
+  .c-label { font-size: 0.72rem; }
+  .c-val { font-size: 0.78rem; }
+  .meters-container { gap: 0.55rem; }
+  .meter-info { font-size: 0.66rem; }
+  .event-log { min-height: 90px; max-height: 150px; }
+  .theory-spotlight { margin-top: 0.75rem; }
+  #fact-text { font-size: 0.73rem; line-height: 1.35; }
+  .intro-content { padding: 1.25rem; }
+  .intro-title { font-size: clamp(2rem, 8vw, 3.2rem); }
+  .intro-cards { grid-template-columns: 1fr; }
+  .modal-content {
+    width: 94%;
+    padding: 1.6rem;
+    max-width: 760px;
+    max-height: 86vh;
+    overflow: auto;
+  }
+  .ending-box { max-width: 92vw; }
+}
+
+@media (max-width: 768px) {
+  .hud { padding: 0.45rem 0.6rem; }
+  .phase-container { flex-wrap: wrap; justify-content: center; }
+  .phase-badge { font-size: 0.62rem; }
+  .phase-name { font-size: 0.74rem; text-align: center; }
+  .obj-tracker { width: 100%; justify-content: center; flex-wrap: wrap; }
+  .obj-progress-bg { width: 120px; }
+  .main-stats { gap: 0.6rem; padding: 0; flex-wrap: wrap; justify-content: center; }
+  .stat-box .label { font-size: 0.58rem; }
+  .stat-box .value { font-size: 0.76rem; }
+  .btn-icon-only { width: 34px; height: 34px; font-size: 0.9rem; }
+  .game-layout { margin-top: 120px; height: calc(100vh - 120px); flex-direction: row; }
+  .sidebar { width: 145px; padding: 0.45rem; }
+  .world-container { min-height: 0; height: auto; }
+  .actions-grid { grid-template-columns: 1fr; gap: 0.28rem; }
+  .action-card { min-height: 50px; padding: 0.2rem 0.3rem; }
+  .ac-icon { font-size: 0.9rem; min-width: 1.05rem; }
+  .ac-name { font-size: 0.7rem; }
+  .ac-cost { font-size: 0.62rem; }
+  .panel-header { font-size: 0.76rem; margin-bottom: 0.45rem; }
+  .event-log { min-height: 70px; max-height: 120px; }
+  .advisor-box {
+    top: 0.7rem;
+    right: 0.7rem;
+    left: auto;
+    width: min(220px, 40vw);
+  }
+  .intro-content { border-radius: 18px; padding: 1rem; }
+  .intro-lead { font-size: 0.92rem; }
+  .intro-card p { font-size: 0.8rem; }
+  .intro-btns .btn { width: auto; max-width: none; }
+  #modal-theory .modal-content h2 { font-size: 1.22rem; }
+  .theory-item summary { font-size: 0.9rem; }
+  .theory-item p { font-size: 0.86rem; }
+}
+
+@media (max-width: 480px) {
+  .game-layout { margin-top: 128px; height: calc(100vh - 128px); flex-direction: row; }
+  .sidebar { width: 128px; padding: 0.35rem; }
+  .world-container { min-height: 0; height: auto; }
+  .panel-header { font-size: 0.88rem; }
+  .c-label, .c-val { font-size: 0.82rem; }
+  .meter-info { font-size: 0.72rem; }
+  .modal-content { padding: 1.1rem; border-radius: 14px; }
+  .big-emoji { font-size: 3.2rem; margin-bottom: 0.8rem; }
+  .action-card { min-height: 44px; padding: 0.15rem 0.24rem; }
+  .ac-name { font-size: 0.64rem; }
+  .ac-cost { font-size: 0.58rem; }
+  .ac-eff-preview { display: none; }
+  .cooldown-badge { font-size: 0.5rem; padding: 0.1rem 0.22rem; }
+  #screen-intro {
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 0.85rem 0.6rem 1.2rem;
+  }
+  .intro-content {
+    width: 100%;
+    margin: 0;
+  }
 }
 
 .big-emoji { font-size: 5rem; margin-bottom: 1.5rem; }
